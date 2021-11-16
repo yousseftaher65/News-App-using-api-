@@ -14,6 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import retrofit2.*
@@ -40,6 +41,24 @@ class MainActivity : AppCompatActivity() {
         val mAdView:AdView = findViewById(R.id.adView)
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
+
+        var bottomNav:BottomNavigationView=findViewById(R.id.bottom_nav)
+
+        bottomNav.setOnNavigationItemSelectedListener {
+            when(it.itemId){
+                R.id.general -> refresh.setOnRefreshListener { generalNews() }
+                R.id.sports -> refresh.setOnRefreshListener { sportsNews() }
+                R.id.entertainment -> refresh.setOnRefreshListener { entertainmentNews() }
+                R.id.technology -> refresh.setOnRefreshListener { technologyNews() }
+            }
+            when(it.itemId){
+                R.id.general -> generalNews()
+                R.id.sports -> sportsNews()
+                R.id.entertainment -> entertainmentNews()
+                R.id.technology -> technologyNews()
+            }
+            return@setOnNavigationItemSelectedListener(true)
+        }
     }
     fun loadNews(){
         val retrofit =Retrofit.Builder()
@@ -67,32 +86,8 @@ class MainActivity : AppCompatActivity() {
 
             }
         })
-
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflate = menuInflater
-        inflate.inflate(R.menu.menu_list,menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        when(id){
-            R.id.general -> refresh.setOnRefreshListener { generalNews() }
-            R.id.sports -> refresh.setOnRefreshListener { sportsNews() }
-            R.id.entertainment -> refresh.setOnRefreshListener { entertainmentNews() }
-            R.id.technology -> refresh.setOnRefreshListener { generalNews() }
-        }
-        when(id){
-            R.id.general -> generalNews()
-            R.id.sports -> sportsNews()
-            R.id.entertainment -> entertainmentNews()
-            R.id.technology -> technology()
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
     fun generalNews(){
         val callable = retrofit.create(CallableInterface::class.java)
         callable.getGeneralNews().enqueue( object : Callback<NewsModel>{
@@ -156,7 +151,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-    fun technology(){
+    fun technologyNews(){
         val callable = retrofit.create(CallableInterface::class.java)
         callable.getTechnologyNews().enqueue( object : Callback<NewsModel>{
             override fun onResponse(call: Call<NewsModel>, response: Response<NewsModel>) {

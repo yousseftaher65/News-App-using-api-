@@ -15,7 +15,6 @@ class NewsAdapter(val activity: Activity , val articles:ArrayList<NewsModel.Arti
     class NewsVH(view: View):RecyclerView.ViewHolder(view) {
 
         val titleTv:TextView=view.findViewById(R.id.text)
-        val nameText:TextView = view.findViewById(R.id.name_text)
         val image:ImageView = view.findViewById(R.id.image)
         val parent:CardView = view.findViewById(R.id.parent)
     }
@@ -27,7 +26,6 @@ class NewsAdapter(val activity: Activity , val articles:ArrayList<NewsModel.Arti
     }
 
     override fun onBindViewHolder(holder: NewsVH, position: Int) {
-        holder.nameText.text = articles?.get(position)?.name
         holder.titleTv.text = articles?.get(position)?.title
         Glide.with(activity)
             .load(articles?.get(position)?.urlToImage)
